@@ -9,6 +9,9 @@ export const env = {
   jwtSecret: process.env.JWT_SECRET || "dev-only-change-me",
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
   frontendUrl: process.env.FRONTEND_URL || "http://localhost:5173",
+  paymentProvider: process.env.PAYMENT_PROVIDER || "demo",
+  platformFeePercent: Number(process.env.PLATFORM_FEE_PERCENT || 10),
+  paymentHoldDays: Number(process.env.PAYMENT_HOLD_DAYS || 7),
   smtp: {
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT || 587),
@@ -21,4 +24,3 @@ export const env = {
 if (env.nodeEnv === "production" && env.jwtSecret === "dev-only-change-me") {
   throw new Error("JWT_SECRET must be configured in production.");
 }
-

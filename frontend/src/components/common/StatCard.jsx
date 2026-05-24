@@ -5,12 +5,11 @@ export const StatCard = ({ icon: Icon, label, value, tone = "bg-brand-500" }) =>
         <span className={`flex h-11 w-11 items-center justify-center rounded-lg ${tone} text-white`}>
           <Icon className="h-5 w-5" />
         </span>
-        <div>
+        <div className="min-w-0">
           <p className="text-sm text-slate-500 dark:text-slate-400">{label}</p>
-          <p className="mt-1 text-2xl font-bold text-slate-950 dark:text-white">{value}</p>
+          <p className="mt-1 break-words text-xl font-bold text-slate-950 dark:text-white">{value}</p>
         </div>
       </div>
     </div>
   );
 };
-

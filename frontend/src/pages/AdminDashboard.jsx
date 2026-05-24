@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Ban, BarChart3, BookUser, GraduationCap, Users } from "lucide-react";
+import { Ban, BarChart3, BookUser, CreditCard, GraduationCap, Scale, Users } from "lucide-react";
 import { api } from "../api/axios.js";
 import { Badge } from "../components/common/Badge.jsx";
 import { Button } from "../components/common/Button.jsx";
@@ -25,12 +25,14 @@ export const AdminDashboard = () => {
 
   return (
     <DashboardLayout title="Admin dashboard" subtitle="Manage users, tutors, reports, and platform analytics.">
-      <div className="grid gap-4 md:grid-cols-5">
+      <div className="grid gap-4 md:grid-cols-4 xl:grid-cols-7">
         <StatCard icon={Users} label="Users" value={analytics.users || 0} tone="bg-slate-700" />
         <StatCard icon={BookUser} label="Students" value={analytics.students || 0} tone="bg-brand-600" />
         <StatCard icon={GraduationCap} label="Tutors" value={analytics.teachers || 0} tone="bg-cobalt-500" />
         <StatCard icon={BarChart3} label="Bookings" value={analytics.bookings || 0} tone="bg-coral-500" />
         <StatCard icon={Ban} label="Reviews" value={analytics.reviews || 0} tone="bg-amber-500" />
+        <StatCard icon={CreditCard} label="Held payments" value={analytics.heldPayments || 0} tone="bg-emerald-600" />
+        <StatCard icon={Scale} label="Open disputes" value={analytics.openDisputes || 0} tone="bg-red-500" />
       </div>
 
       <section className="mt-6 rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -81,4 +83,3 @@ export const AdminDashboard = () => {
     </DashboardLayout>
   );
 };
-

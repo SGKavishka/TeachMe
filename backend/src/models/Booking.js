@@ -26,6 +26,12 @@ const bookingSchema = new mongoose.Schema(
       enum: ["online", "physical"],
       required: true
     },
+    sessionDurationMinutes: {
+      type: Number,
+      min: 15,
+      max: 480,
+      default: 60
+    },
     preferredSchedule: {
       date: Date,
       time: String
@@ -37,16 +43,51 @@ const bookingSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "accepted", "rejected", "completed", "cancelled"],
+      enum: [
+        "pending",
+        "accepted",
+        "rejected",
+        "payment_pending",
+        "waiting_completion",
+        "teacher_completed",
+        "completed",
+        "cancelled",
+        "disputed",
+        "refunded"
+      ],
       default: "pending"
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "paid", "on_hold", "released", "refunded", "failed", "partially_refunded"],
+      default: "pending"
+    },
+    payment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Payment"
     },
     price: {
       amount: Number,
+      platformFee: {
+        type: Number,
+        default: 0
+      },
+      teacherAmount: {
+        type: Number,
+        default: 0
+      },
+      finalAmount: {
+        type: Number,
+        default: 0
+      },
       currency: {
         type: String,
         default: "USD"
       }
     },
+    completedByTeacherAt: Date,
+    confirmedByStudentAt: Date,
+    issueReportedAt: Date,
     notes: String
   },
   { timestamps: true }
@@ -56,4 +97,3 @@ bookingSchema.index({ student: 1, status: 1 });
 bookingSchema.index({ teacher: 1, status: 1 });
 
 export const Booking = mongoose.model("Booking", bookingSchema);
-

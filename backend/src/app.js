@@ -13,6 +13,7 @@ import bookingRoutes from "./routes/bookingRoutes.js";
 import favoriteRoutes from "./routes/favoriteRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
 import subjectRoutes from "./routes/subjectRoutes.js";
@@ -38,6 +39,7 @@ export const createApp = () => {
   app.use("/api/students", studentRoutes);
   app.use("/api/bookings", bookingRoutes);
   app.use("/api/messages", messageRoutes);
+  app.use("/api/payments", paymentRoutes);
   app.use("/api/reviews", reviewRoutes);
   app.use("/api/favorites", favoriteRoutes);
   app.use("/api/notifications", notificationRoutes);
@@ -49,4 +51,3 @@ export const createApp = () => {
 
   return app;
 };
-

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import Joi from "joi";
-import { cancelBooking, createBooking, listMyBookings, updateBookingStatus } from "../controllers/bookingController.js";
+import { cancelBooking, createBooking, getBookingById, listMyBookings, updateBookingStatus } from "../controllers/bookingController.js";
 import { authorize, protect } from "../middleware/auth.js";
 import { validate } from "../middleware/validate.js";
 
@@ -8,6 +8,7 @@ const router = Router();
 
 router.use(protect);
 router.get("/", listMyBookings);
+router.get("/:id", getBookingById);
 router.post(
   "/",
   authorize("student"),
@@ -16,6 +17,7 @@ router.post(
     subject: Joi.string().required(),
     topic: Joi.string().allow(""),
     mode: Joi.string().valid("online", "physical").required(),
+    sessionDurationMinutes: Joi.number().integer().min(15).max(480).default(60),
     preferredSchedule: Joi.object({
       date: Joi.date(),
       time: Joi.string().allow("")
@@ -36,4 +38,3 @@ router.patch(
 router.patch("/:id/cancel", authorize("student", "admin"), cancelBooking);
 
 export default router;
-

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { Bookmark, CalendarDays, CheckCircle2, MapPin, MessageCircle, Monitor, School } from "lucide-react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Bookmark, CalendarDays, CheckCircle2, Clock, MapPin, MessageCircle, Monitor, School } from "lucide-react";
 import { api } from "../api/axios.js";
 import { Badge } from "../components/common/Badge.jsx";
 import { Button } from "../components/common/Button.jsx";
@@ -9,13 +9,15 @@ import { Select } from "../components/common/Select.jsx";
 import { RatingStars } from "../components/tutors/RatingStars.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { mockTutors } from "../mocks/tutors.js";
+import { formatMoney } from "../utils/payments.js";
 
 export const TutorProfile = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
   const [tutor, setTutor] = useState(null);
   const [reviews, setReviews] = useState([]);
-  const [request, setRequest] = useState({ subject: "", topic: "", mode: "online", date: "", time: "", message: "" });
+  const [request, setRequest] = useState({ subject: "", topic: "", mode: "online", duration: 60, date: "", time: "", message: "" });
   const [notice, setNotice] = useState("");
 
   useEffect(() => {
@@ -36,6 +38,9 @@ export const TutorProfile = () => {
 
   const subjects = tutor?.subjects || [];
   const selectedSubject = useMemo(() => subjects.find((item) => item.subject === request.subject) || subjects[0], [subjects, request.subject]);
+  const lessonAmount = ((tutor?.pricing?.hourlyRate || 0) * Number(request.duration || 60)) / 60;
+  const platformFee = lessonAmount * 0.1;
+  const finalPayable = lessonAmount + platformFee;
 
   useEffect(() => {
     if (subjects[0] && !request.subject) {
@@ -58,15 +63,16 @@ export const TutorProfile = () => {
     }
 
     try {
-      await api.post("/bookings", {
+      const { data } = await api.post("/bookings", {
         teacher: tutor._id,
         subject: request.subject,
         topic: request.topic,
         mode: request.mode,
+        sessionDurationMinutes: Number(request.duration),
         preferredSchedule: { date: request.date, time: request.time },
         message: request.message
       });
-      setNotice("Learning request sent.");
+      navigate(`/bookings/${data.data._id}/confirm`);
     } catch (err) {
       setNotice(err.response?.data?.message || "Request could not be sent.");
     }
@@ -175,7 +181,13 @@ export const TutorProfile = () => {
             </Select>
             <Select label="Class mode" value={request.mode} onChange={(event) => setRequest({ ...request, mode: event.target.value })}>
               {tutor.classModes?.online ? <option value="online">Online</option> : null}
-              {tutor.classModes?.physical ? <option value="physical">Physical</option> : null}
+              {tutor.classModes?.physical ? <option value="physical">Offline</option> : null}
+            </Select>
+            <Select label="Session duration" value={request.duration} onChange={(event) => setRequest({ ...request, duration: Number(event.target.value) })}>
+              <option value={30}>30 minutes</option>
+              <option value={60}>60 minutes</option>
+              <option value={90}>90 minutes</option>
+              <option value={120}>120 minutes</option>
             </Select>
             <Input icon={CalendarDays} label="Preferred date" type="date" value={request.date} onChange={(event) => setRequest({ ...request, date: event.target.value })} />
             <Input label="Preferred time" type="time" value={request.time} onChange={(event) => setRequest({ ...request, time: event.target.value })} />
@@ -188,7 +200,20 @@ export const TutorProfile = () => {
                 placeholder="Describe what you want to learn"
               />
             </label>
-            <Button type="submit">Send request</Button>
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm dark:border-slate-800 dark:bg-slate-950">
+              <div className="flex items-center gap-2 font-semibold text-slate-950 dark:text-white">
+                <Clock className="h-4 w-4 text-brand-600" />
+                {request.duration} minute session
+              </div>
+              <div className="mt-3 grid gap-2 text-slate-600 dark:text-slate-300">
+                <div className="flex justify-between gap-3"><span>Lesson</span><span>{formatMoney(lessonAmount, tutor.pricing?.currency || "USD")}</span></div>
+                <div className="flex justify-between gap-3"><span>Platform fee</span><span>{formatMoney(platformFee, tutor.pricing?.currency || "USD")}</span></div>
+                <div className="flex justify-between gap-3 border-t border-slate-200 pt-2 font-bold text-slate-950 dark:border-slate-800 dark:text-white">
+                  <span>Total</span><span>{formatMoney(finalPayable, tutor.pricing?.currency || "USD")}</span>
+                </div>
+              </div>
+            </div>
+            <Button type="submit">Continue to booking</Button>
             <Button as={Link} to="/messages" variant="outline">
               <MessageCircle className="h-4 w-4" />
               Message tutor

@@ -90,6 +90,22 @@ const teacherSchema = new mongoose.Schema(
       phone: String,
       website: String
     },
+    payout: {
+      provider: {
+        type: String,
+        enum: ["manual", "stripe_connect"],
+        default: "manual"
+      },
+      connectedAccountId: String,
+      chargesEnabled: {
+        type: Boolean,
+        default: false
+      },
+      payoutsEnabled: {
+        type: Boolean,
+        default: false
+      }
+    },
     ratingAverage: {
       type: Number,
       default: 0,
@@ -122,4 +138,3 @@ teacherSchema.index({
 teacherSchema.index({ "location.city": 1, ratingAverage: -1, "pricing.hourlyRate": 1 });
 
 export const Teacher = mongoose.model("Teacher", teacherSchema);
-

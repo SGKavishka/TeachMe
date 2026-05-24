@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { BookOpen, CalendarCheck, Heart, LayoutDashboard, MessageCircle, Settings, Users } from "lucide-react";
+import { BookOpen, CalendarCheck, CreditCard, Heart, LayoutDashboard, MessageCircle, ReceiptText, Scale, Settings, Users, WalletCards } from "lucide-react";
 import clsx from "clsx";
 import { useAuth } from "../../context/AuthContext.jsx";
 
@@ -7,17 +7,27 @@ const roleLinks = {
   student: [
     { to: "/student/dashboard", label: "Overview", icon: LayoutDashboard },
     { to: "/tutors", label: "Find tutors", icon: BookOpen },
+    { to: "/student/wallet", label: "Payments", icon: CreditCard },
+    { to: "/student/transactions", label: "Transactions", icon: ReceiptText },
+    { to: "/student/disputes", label: "Disputes", icon: Scale },
     { to: "/messages", label: "Messages", icon: MessageCircle },
     { to: "/student/dashboard", label: "Favorites", icon: Heart }
   ],
   teacher: [
     { to: "/teacher/dashboard", label: "Overview", icon: LayoutDashboard },
     { to: "/teacher/dashboard", label: "Requests", icon: CalendarCheck },
+    { to: "/teacher/earnings", label: "Earnings", icon: CreditCard },
+    { to: "/teacher/wallet", label: "Wallet", icon: WalletCards },
+    { to: "/teacher/transactions", label: "Transactions", icon: ReceiptText },
+    { to: "/teacher/disputes", label: "Disputes", icon: Scale },
     { to: "/messages", label: "Messages", icon: MessageCircle },
     { to: "/teacher/dashboard", label: "Profile", icon: Settings }
   ],
   admin: [
     { to: "/admin", label: "Analytics", icon: LayoutDashboard },
+    { to: "/admin/payments", label: "Payments", icon: CreditCard },
+    { to: "/admin/transactions", label: "Transactions", icon: ReceiptText },
+    { to: "/admin/disputes", label: "Disputes", icon: Scale },
     { to: "/admin", label: "Users", icon: Users },
     { to: "/admin", label: "Moderation", icon: Settings }
   ]
@@ -66,4 +76,3 @@ export const DashboardLayout = ({ title, subtitle, children }) => {
     </main>
   );
 };
-

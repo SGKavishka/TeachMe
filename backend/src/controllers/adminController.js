@@ -1,23 +1,29 @@
 import { User } from "../models/User.js";
 import { Teacher } from "../models/Teacher.js";
 import { Booking } from "../models/Booking.js";
+import { Dispute } from "../models/Dispute.js";
+import { Payment } from "../models/Payment.js";
 import { Review } from "../models/Review.js";
+import { Withdrawal } from "../models/Withdrawal.js";
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const getAdminAnalytics = asyncHandler(async (req, res) => {
-  const [users, students, teachers, bookings, reviews, pendingTeachers] = await Promise.all([
+  const [users, students, teachers, bookings, reviews, pendingTeachers, heldPayments, openDisputes, pendingWithdrawals] = await Promise.all([
     User.countDocuments(),
     User.countDocuments({ role: "student" }),
     User.countDocuments({ role: "teacher" }),
     Booking.countDocuments(),
     Review.countDocuments(),
-    Teacher.countDocuments({ profileStatus: "draft" })
+    Teacher.countDocuments({ profileStatus: "draft" }),
+    Payment.countDocuments({ status: "on_hold" }),
+    Dispute.countDocuments({ status: { $in: ["open", "under_review"] } }),
+    Withdrawal.countDocuments({ status: "pending" })
   ]);
 
   res.json({
     success: true,
-    data: { users, students, teachers, bookings, reviews, pendingTeachers }
+    data: { users, students, teachers, bookings, reviews, pendingTeachers, heldPayments, openDisputes, pendingWithdrawals }
   });
 });
 
@@ -45,4 +51,3 @@ export const updateTeacherModeration = asyncHandler(async (req, res) => {
 
   res.json({ success: true, data: teacher });
 });
-

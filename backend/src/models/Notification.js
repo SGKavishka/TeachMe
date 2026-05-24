@@ -10,7 +10,7 @@ const notificationSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["booking", "message", "review", "system"],
+      enum: ["booking", "message", "review", "payment", "dispute", "wallet", "system"],
       default: "system"
     },
     title: {
@@ -31,4 +31,3 @@ const notificationSchema = new mongoose.Schema(
 );
 
 export const Notification = mongoose.model("Notification", notificationSchema);
-

@@ -1,14 +1,19 @@
 import { connectDb } from "./connect.js";
 import { Booking } from "../models/Booking.js";
+import { Dispute } from "../models/Dispute.js";
 import { Favorite } from "../models/Favorite.js";
 import { Message } from "../models/Message.js";
 import { Notification } from "../models/Notification.js";
+import { Payment } from "../models/Payment.js";
 import { Review } from "../models/Review.js";
 import { Student } from "../models/Student.js";
 import { Subject } from "../models/Subject.js";
 import { Teacher } from "../models/Teacher.js";
+import { Transaction } from "../models/Transaction.js";
 import { Topic } from "../models/Topic.js";
 import { User } from "../models/User.js";
+import { Wallet } from "../models/Wallet.js";
+import { Withdrawal } from "../models/Withdrawal.js";
 
 const subjects = [
   { name: "Mathematics", category: "STEM", topics: ["Algebra", "Calculus", "Statistics"] },
@@ -61,15 +66,20 @@ const seed = async () => {
 
   await Promise.all([
     Booking.deleteMany(),
+    Dispute.deleteMany(),
     Favorite.deleteMany(),
     Message.deleteMany(),
     Notification.deleteMany(),
+    Payment.deleteMany(),
     Review.deleteMany(),
     Student.deleteMany(),
     Teacher.deleteMany(),
+    Transaction.deleteMany(),
     Subject.deleteMany(),
     Topic.deleteMany(),
-    User.deleteMany()
+    User.deleteMany(),
+    Wallet.deleteMany(),
+    Withdrawal.deleteMany()
   ]);
 
   await User.create({
